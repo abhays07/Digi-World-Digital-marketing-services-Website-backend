@@ -7,12 +7,13 @@ const Admin = require('../models/Admin');
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    // Normalize email: clean trailing spaces (common on mobile) and lowercase
+    // Normalize inputs: clean trailing spaces (common on mobile)
     const normalizedEmail = email ? email.trim().toLowerCase() : '';
-    
+    const normalizedPassword = password ? password.trim() : '';
+
     const admin = await Admin.findOne({ email: normalizedEmail });
     
-    if (!admin || !(await admin.comparePassword(password))) {
+    if (!admin || !(await admin.comparePassword(normalizedPassword))) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
