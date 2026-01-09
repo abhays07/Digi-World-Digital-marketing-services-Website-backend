@@ -11,10 +11,19 @@ router.post('/login', async (req, res) => {
     const normalizedEmail = email ? email.trim().toLowerCase() : '';
     const normalizedPassword = password ? password.trim() : '';
 
+    console.log(`[Login Attempt] Email: '${normalizedEmail}', PwdLength: ${normalizedPassword.length}`);
+
     const admin = await Admin.findOne({ email: normalizedEmail });
     
-    if (!admin || !(await admin.comparePassword(normalizedPassword))) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    if (!admin) {
+        console.log('[Login Failed] Admin user not found');
+        return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    const isMatch = await admin.comparePassword(normalizedPassword);
+    if (!isMatch) {
+         console.log('[Login Failed] Password did not match');
+         return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
