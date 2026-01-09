@@ -7,7 +7,10 @@ const Admin = require('../models/Admin');
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const admin = await Admin.findOne({ email });
+    // Normalize email: clean trailing spaces (common on mobile) and lowercase
+    const normalizedEmail = email ? email.trim().toLowerCase() : '';
+    
+    const admin = await Admin.findOne({ email: normalizedEmail });
     
     if (!admin || !(await admin.comparePassword(password))) {
       return res.status(401).json({ message: 'Invalid credentials' });
