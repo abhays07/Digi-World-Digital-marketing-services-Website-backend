@@ -43,6 +43,7 @@ const corsOptions = {
       "http://localhost:5173",
       "http://localhost:3000",
       "https://digiworldpromotions.in",
+      "https://www.digiworldpromotions.in",
       "https://106a4fb12c72.ngrok-free.app",
     ].filter(Boolean);
 
